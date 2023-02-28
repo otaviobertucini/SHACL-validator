@@ -1,0 +1,85 @@
+@prefix : <http://www.semanticweb.org/mateus/ontologies/2019/9/mobility_&_education#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:UTFPR rdf:type :Bus_Stop, owl:NamedIndividual ;
+	:hasCode "4"^^xsd:integer ;
+	:isLocated :AmazonasMarcondes 
+.
+
+:PUCPR rdf:type :Bus_Stop, owl:NamedIndividual ;
+	:isLocated :AmazonasMarcondes ;
+	:hasCode "5"^^xsd:integer 
+.
+
+:Amarelo 
+	:hasStop :PUCPR ;
+	:passBy :Boqueirao ;
+	:passBy :Cabral ;
+	:hasStop :UTFPR ;
+	:hasCode "2"^^xsd:integer ;
+	:hasName "Amarelo"^^xsd:string ;
+	rdf:type :Bus, owl:NamedIndividual .
+
+:AmazonasMarcondes rdf:type :Address, owl:NamedIndividual .
+
+:AvenidaParana rdf:type :Address, owl:NamedIndividual .
+
+:Boqueirao 
+	:hasCode "1"^^xsd:integer ;
+	:isLocated :AmazonasMarcondes ;
+	rdf:type :Bus_Station, owl:NamedIndividual .
+
+:Cabral :hasBus :Circular ;
+	:hasCode "3"^^xsd:integer ; 
+	:isLocated :AvenidaParana ;
+	rdf:type :Bus_Station, owl:NamedIndividual .
+
+:CasaOtavio rdf:type :Bus_Stop, owl:NamedIndividual ;
+	:hasCode "7"^^xsd:integer ;
+	:isLocated :AmazonasMarcondes 
+.
+
+:Circular 
+	:hasStop :CasaOtavio ;
+	:hasStop :Cabral ;
+	:hasCode "6"^^xsd:integer ;
+	:hasName "Circular"^^xsd:string ;
+	rdf:type :Bus, owl:NamedIndividual .
+
+:ENADE_2022
+	:hasINSE "8"^^xsd:integer ; 
+	:hasYear "2022"^^xsd:integer ;
+	:hasParticipationRate "7.2341"^^xsd:double ;
+	rdf:type :Exam, owl:NamedIndividual .
+
+:Stat_2022
+	rdf:type :Educational_Statistics, owl:NamedIndividual .
+
+:Bom_Jesus
+	rdf:type :School, owl:NamedIndividual ;
+	:hasCode "8"^^xsd:integer ; 
+	:hasName "Bom Jesus"^^xsd:string ;
+	:hasType "Particular"^^xsd:string ;
+	:hasINEPCode "12345678"^^xsd:string ;
+	:isLocated :AvenidaParana ;
+	:isNearAccessPoint :UTFPR ;
+	:takesExam :ENADE_2022 ;
+	:hasStatistics :Stat_2022 ;
+.
+
+:FAE
+	rdf:type :University, owl:NamedIndividual ;
+	:hasCode "9"^^xsd:integer ; 
+	:hasName "FAE"^^xsd:string ;
+	:hasType "Particular"^^xsd:string ;
+	:hasINEPCode "12345679"^^xsd:string ;
+	:isLocated :AvenidaParana ;
+	:isNearAccessPoint :PUCPR ;
+	:takesExam :ENADE_2022 ;
+	:hasCodeIES "12345"^^xsd:integer ;
+	:hasInitials "FAE - Centro"^^xsd:string ;
+.

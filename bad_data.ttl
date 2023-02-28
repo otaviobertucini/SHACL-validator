@@ -1,0 +1,29 @@
+@prefix : <http://www.semanticweb.org/mateus/ontologies/2019/9/mobility_&_education#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xml: <http://www.w3.org/XML/1998/namespace> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+:Rui_Barbosa rdf:type :Bus_Station, owl:NamedIndividual ;
+	:isLocated :AmazonasMarcondes ;
+	:hasCode "10"^^xsd:integer 
+.
+
+:Osorio 
+	:hasCode "6"^^xsd:integer ;
+	:hasName "Osorio"^^xsd:string ;
+	rdf:type :Bus, owl:NamedIndividual .
+
+
+:Tuiuti
+	rdf:type :University, owl:NamedIndividual ;
+	:hasCode "8"^^xsd:integer ; 
+	:hasName "Tuiutí"^^xsd:string ;
+	:hasType "Particular"^^xsd:string ;
+	:hasINEPCode "123456"^^xsd:string ;
+	:isNearAccessPoint :PUCPR ;
+	:takesExam :ENADE_2022 ;
+	:hasCodeIES "12346"^^xsd:integer ;
+	:hasInitials "Tuiutí"^^xsd:string ;
+.

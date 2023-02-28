@@ -1,0 +1,285 @@
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix ex:    <http://www.example.org/#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix :      <http://www.semanticweb.org/mateus/ontologies/2019/9/mobility_&_education#> .
+
+:RepeatedCodeShape a sh:NodeShape ;
+    sh:targetClass :Educational_Institution, :Bus, :Access_Point  ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;   # This triple is optional
+        sh:message '''{"message": "Repeated value of predicate hasCode", "type": "duplicate"}''' ;
+        sh:select """
+            PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+            PREFIX owl: <http://www.w3.org/2002/07/owl#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+            PREFIX mob: <http://www.semanticweb.org/mateus/ontologies/2019/9/mobility_&_education#>
+
+            SELECT $this WHERE {
+                $this mob:hasCode ?object  .
+                    { SELECT ?object $this WHERE { ?subject mob:hasCode ?object } GROUP BY ?object $this HAVING (COUNT(?object) > 1) }
+            }
+        """ ;
+    ]
+.
+
+:BusShape a sh:NodeShape ;
+    sh:targetClass :Bus ;
+    sh:or (
+        [
+            sh:message '''{"message": "Bus has invalid stop", "type": "property"}''' ;
+            sh:path :hasStop ;
+            sh:minCount 2 ;
+            sh:class :Bus_Stop ;
+        ]
+        [
+            sh:message '''{"message": "Bus has invalid stop", "type": "property"}''' ;
+            sh:path :passBy ;
+            sh:minCount 2 ;
+            sh:class :Bus_Station ;
+        ]
+        [
+            sh:and (
+                [
+                    sh:message '''{"message": "Bus has invalid stop", "type": "property"}''' ;
+                    sh:path :passBy ;
+                    sh:minCount 1 ;
+                    sh:class :Bus_Station ;
+                ]
+                [
+                    sh:message '''{"message": "Bus has invalid stop", "type": "property"}''' ;
+                    sh:path :hasStop ;
+                    sh:minCount 1 ;
+                    sh:class :Bus_Stop ;
+                ]
+            )
+        ]
+    ) ;
+    sh:property [
+        sh:message '''{"message": "Bus has invalid code.", "type": "property"}''' ;
+        sh:path :hasCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Bus has invalid name.", "type": "property"}''' ;
+        sh:path :hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+.
+
+:AccessPointShape a sh:NodeShape ;
+    sh:targetClass :Access_Point ;
+    sh:property [
+        sh:message '''{"message": "Access Point has invalid code.", "type": "property"}''' ;
+        sh:path :hasCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:minInclusive 1 ;
+        sh:maxInclusive 9999 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Access Point has invalid address.", "type": "property"}''' ;
+        sh:path :isLocated ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class :Address ;
+    ] ;
+    sh:closed true ;
+	sh:ignoredProperties (rdf:type) ;
+.
+
+
+:BusStationShape a sh:NodeShape ;
+    sh:targetClass :Bus_Station ;
+    sh:property [
+        sh:message '''{"message": "Bus Station has invalid or no buses passing by.", "type": "property"}''' ;
+        sh:path :hasBus ;
+        sh:minCount 1 ;
+        sh:class :Bus ;
+    ] ;
+.
+
+:BusStopShape a sh:NodeShape ;
+    sh:targetClass :Bus_Stop ;
+    sh:property [
+        sh:message '''{"message": "Bus Stop has invalid or no buses passing by.", "type": "property"}''' ;
+        sh:path :isStopOf ;
+        sh:minCount 1 ;
+        sh:class :Bus ;
+    ] ;
+.
+
+:ExamShape a sh:NodeShape ;
+    sh:targetClass :Exam ;
+    sh:property [
+        sh:message '''{"message": "Exam has invalid year.", "type": "property"}''' ;
+        sh:path :hasYear ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Exam has invalid INSE.", "type": "property"}''' ;
+        sh:path :hasINSE ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Exam has invalid participation rate.", "type": "property"}''' ;
+        sh:path :hasParticipationRate ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] ;
+.
+
+:EducationalInstitutionShape a sh:NodeShape ;
+    sh:targetClass :Educational_Institution ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid code.", "type": "property"}''' ;
+        sh:path :hasCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid name.", "type": "property"}''' ;
+        sh:path :hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid address.", "type": "property"}''' ;
+        sh:path :isLocated ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class :Address ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid type.", "type": "property"}''' ;
+        sh:path :hasType ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^Particular$|^Público Municipal$|^Público Estadual$|^Público Federal$"
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid INEP code.", "type": "property"}''' ;
+        sh:path :hasINEPCode ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:pattern "^[0-9]{8}$"
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid near Access Point", "type": "property"}''' ;
+        sh:path :isNearAccessPoint ;
+        sh:minCount 0 ;
+        sh:class :Access_Point
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Educational Institution has invalid exam", "type": "property"}''' ;
+        sh:path :takesExam ;
+        sh:minCount 1 ;
+        sh:class :Exam
+    ] ;
+    sh:closed true ;
+	sh:ignoredProperties (rdf:type) ;
+.
+
+:SchoolShape a sh:NodeShape ;
+    sh:targetClass :School ;
+    sh:property [
+        sh:message '''{"message": "School has invalid statistics.", "type": "property"}''' ;
+        sh:path :hasStatistics ;
+        sh:minCount 1 ;
+        sh:class :Educational_Statistics ;
+    ] ;
+.
+
+:UniversityShape a sh:NodeShape ;
+    sh:targetClass :University ;
+    sh:property [
+        sh:message '''{"message": "University has invalid IES.", "type": "property"}''' ;
+        sh:path :hasCodeIES ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+        sh:minInclusive 100 ;
+        sh:maxInclusive 99999 ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "University has invalid initials.", "type": "property"}''' ;
+        sh:path :hasInitials ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+.
+
+:EducationalStatisticsShape a sh:NodeShape ;
+    sh:targetClass :Educational_Statistics ;
+    sh:property [
+        sh:message '''{"message": "Statistc has invalid Abandonment Rate.", "type": "property"}''' ;
+        sh:path :hasAbandonmentRate ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Statistc has invalid Approval Rate.", "type": "property"}''' ;
+        sh:path :hasApprovalRate ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Statistc has invalid Disapproval Rate.", "type": "property"}''' ;
+        sh:path :hasDisapprovalRate ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Statistc has invalid Permanence Rate.", "type": "property"}''' ;
+        sh:path :hasPermanenceRate ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:double ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Exam has invalid INSE.", "type": "property"}''' ;
+        sh:path :hasINSE ;
+        sh:minCount 0 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:integer ;
+    ] ;
+.
+
+:AddressShape a sh:NodeShape ;
+    sh:targetClass :Address ;
+    sh:property [
+        sh:message '''{"message": "Address has invalid name.", "type": "property"}''' ;
+        sh:path :hasName ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+    sh:property [
+        sh:message '''{"message": "Address has invalid neighborhood.", "type": "property"}''' ;
+        sh:path :hasNeighborhood ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+    ] ;
+.
